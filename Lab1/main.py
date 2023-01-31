@@ -80,17 +80,33 @@ def lab1_test():
     print(calculate_inverse_matrix(matrix_example,
                                    inverse_matrix_example,
                                    x_vector_example, i))
-    matrix_example = [[2, 5, 7],
-                      [6, 3, 4],
-                      [5, -2, -3]]
-    inverse_matrix_example = [[1, -1, 1],
-                              [-38, 41, -34],
-                              [27, -29, 24]]
-    x_vector_example = [2, 1, 3]
-    i = 1
-    print(calculate_inverse_matrix(matrix_example,
-                                   inverse_matrix_example,
-                                   x_vector_example, i))
+    matrix_example2 = [[2, 5, 7],
+                       [6, 3, 4],
+                       [5, -2, -3]]
+    inverse_matrix_example2 = [[1, -1, 1],
+                               [-38, 41, -34],
+                               [27, -29, 24]]
+    x_vector_example2 = [2, 1, 3]
+    i2 = 1
+    print(calculate_inverse_matrix(matrix_example2,
+                                   inverse_matrix_example2,
+                                   x_vector_example2, i2))
+
+    matrix_example3 = [[1,-1,3,2,4],
+                       [2,-3,2,-2,-6],
+                       [3,-5,1,4,2],
+                       [4,-2,-1,-3,-1],
+                       [5,-1,0,1,2]]
+    inverse_matrix_example3 = [[-21/650, 4/75, -113/1950, -47/975, 84/325],
+                                [-11/325, 1/25, -61/325, -68/325, 88/325],
+                                [161/650, 11/75, -217/1950, -73/975, 6/325],
+                                [-97/650, 1/25, 53/650, -93/325, 63/325],
+                                [9/65, -2/15, 2/195, 31/195, -7/65]]
+    x_vector_example3 = [2, 1, 3,-1,2]
+    i3 = 4
+    print(calculate_inverse_matrix(matrix_example3,
+                                   inverse_matrix_example3,
+                                   x_vector_example3, i3))
 
 
 if __name__ == '__main__':
