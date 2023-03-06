@@ -6,7 +6,7 @@ def multiply_matrix_on_vector(inverse_matrix, vector):
 
     for j in range(len(inverse_matrix)):
         sum_of_row = 0
-        for i in range(len(inverse_matrix[j])):
+        for i in range(len(inverse_matrix)):
             sum_of_row += inverse_matrix[j][i] * vector[i]
 
         result_matrix.append(sum_of_row)
@@ -70,6 +70,8 @@ def multiply_matrix_on_q_matrix(inverse_matrix, q_matrix, index):
 def calculate_inverse_matrix(matrix, inverse_matrix, x_vector, i):
     result_vector = multiply_matrix_on_vector(inverse_matrix, x_vector)
 
+    print(inverse_matrix, x_vector)
+
     if result_vector[i - 1] == 0:
         raise Exception("Matrix is irreversible")
 
@@ -102,23 +104,23 @@ def get_inverse_matrix(a_matrix, b_basis_plan):
 
 
 def main_phase_of_simplex_method(c_vector, a_matrix, a_base_matrix, inverse_matrix, x_basis_plan, b_basis_plan, b_basis_result):
-
+    print(a_matrix, inverse_matrix)
     c_vector_base = []
     for i in b_basis_plan:
         c_vector_base.append(c_vector[i-1])
 
     print("Vector_base ", c_vector_base)
-    potential_vector = multiply_vector_on_matrix(c_vector_base,a_base_matrix)
+    potential_vector = multiply_vector_on_matrix(c_vector_base, inverse_matrix)
     print("Potential vector ", potential_vector)
 
     mark_vector = []
     help_vector = multiply_vector_on_matrix(potential_vector, a_matrix)
-
+    print("Help vector ", help_vector)
     for i in range(len(help_vector)):
         mark_vector.append(help_vector[i] - c_vector[i])
     print("Mark vector ", mark_vector)
     j = check_is_optimal(mark_vector)
-
+    print("J", j)
     if j == len(mark_vector):
         print("Plan is optimal", x_basis_plan)
         return
@@ -160,16 +162,15 @@ def main_phase_of_simplex_method(c_vector, a_matrix, a_base_matrix, inverse_matr
             x_basis_plan[b_basis_result[i]-1] = (x_basis_plan[b_basis_result[i]-1] - q_0*z_vector[i])
 
     x_basis_plan[j_k - 1] = 0
-    x_basis_plan[k - 1] = q_0
+    x_basis_plan[j - 1] = q_0
     print(x_basis_plan)
     a_new_base_matrix = get_base_matrix(a_matrix, b_basis_result)
-    print(k)
-    print(np.array(a_matrix)[:, k-1])
-    inverse_new_matrix = calculate_inverse_matrix(a_base_matrix, inverse_matrix, np.array(a_matrix)[:, k-1], k+1)
-    print(inverse_new_matrix)
-    print(c_vector)
+
+    inverse_new_matrix = calculate_inverse_matrix(a_base_matrix, inverse_matrix, np.array(a_matrix)[:, j-1], k+1)
+
     main_phase_of_simplex_method(c_vector, a_matrix, a_new_base_matrix, inverse_new_matrix, x_basis_plan, b_basis_plan, b_basis_result)
-    pass
+
+    return
 
 
 def check_is_optimal(mark_vector):
