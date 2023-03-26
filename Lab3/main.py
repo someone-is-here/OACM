@@ -57,7 +57,7 @@ def multiply_matrix_on_q_matrix(inverse_matrix, q_matrix, index):
     for i in range(len(inverse_matrix)):
         row = []
         for j in range(len(inverse_matrix)):
-            if inverse_matrix[i][j] != inverse_matrix[index][j]:
+            if i != index:
                 row.append(inverse_matrix[i][j] * q_matrix[i][i] + inverse_matrix[index][j] * q_matrix[i][index])
             else:
                 row.append(inverse_matrix[index][j] * q_matrix[i][index])
@@ -211,7 +211,7 @@ def simplex_method(c_vector, a_matrix, b_vector):
 
     for i in range(len(a_matrix[0]), len(a_additional_matrix[0])):
         if x_basis_plan[i] != 0:
-            raise Exception("Task is not compatible")
+            raise Exception("Problem is infeasible")
 
     while max(b_basis_result) > len(a_matrix[0]) + 1:
         j_k = max(b_basis_result)

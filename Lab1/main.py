@@ -42,7 +42,7 @@ def multiply_matrix_on_q_matrix(inverse_matrix, q_matrix, index):
     for i in range(len(inverse_matrix)):
         row = []
         for j in range(len(inverse_matrix)):
-            if inverse_matrix[i][j] != inverse_matrix[index][j]:
+            if i != index:
                 row.append(inverse_matrix[i][j] * q_matrix[i][i] + inverse_matrix[index][j] * q_matrix[i][index])
             else:
                 row.append(inverse_matrix[index][j] * q_matrix[i][index])

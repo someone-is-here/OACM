@@ -57,6 +57,7 @@ def multiply_matrix_on_q_matrix(inverse_matrix, q_matrix, index):
     for i in range(len(inverse_matrix)):
         row = []
         for j in range(len(inverse_matrix)):
+
             if i != index:
                 row.append(inverse_matrix[i][j] * q_matrix[i][i] + inverse_matrix[index][j] * q_matrix[i][index])
             else:
@@ -69,8 +70,6 @@ def multiply_matrix_on_q_matrix(inverse_matrix, q_matrix, index):
 
 def calculate_inverse_matrix(matrix, inverse_matrix, x_vector, i):
     result_vector = multiply_matrix_on_vector(inverse_matrix, x_vector)
-
-    print(inverse_matrix, x_vector)
 
     if result_vector[i - 1] == 0:
         raise Exception("Matrix is irreversible")
@@ -123,7 +122,7 @@ def main_phase_of_simplex_method(c_vector, a_matrix, a_base_matrix, inverse_matr
     print("J", j)
     if j == len(mark_vector):
         print("Plan is optimal", x_basis_plan)
-        return
+        return x_basis_plan, b_basis_result
 
     a_j = []
     for i in range(len(a_matrix)):
@@ -163,14 +162,13 @@ def main_phase_of_simplex_method(c_vector, a_matrix, a_base_matrix, inverse_matr
 
     x_basis_plan[j_k - 1] = 0
     x_basis_plan[j - 1] = q_0
-    print(x_basis_plan)
-    a_new_base_matrix = get_base_matrix(a_matrix, b_basis_result)
 
+    print(x_basis_plan)
+
+    a_new_base_matrix = get_base_matrix(a_matrix, b_basis_result)
     inverse_new_matrix = calculate_inverse_matrix(a_base_matrix, inverse_matrix, np.array(a_matrix)[:, j-1], k+1)
 
-    main_phase_of_simplex_method(c_vector, a_matrix, a_new_base_matrix, inverse_new_matrix, x_basis_plan, b_basis_plan, b_basis_result)
-
-    return
+    return main_phase_of_simplex_method(c_vector, a_matrix, a_new_base_matrix, inverse_new_matrix, x_basis_plan, b_basis_plan, b_basis_result)
 
 
 def check_is_optimal(mark_vector):
@@ -179,6 +177,83 @@ def check_is_optimal(mark_vector):
             return i + 1
 
     return len(mark_vector)
+
+
+def simplex_method(c_vector, a_matrix, b_vector):
+    for i in range(len(b_vector)):
+        if b_vector[i] < 0:
+            a_matrix[i] = [(-a_matrix[i][j]) for j in range(len(a_matrix[i]))]
+            b_vector[i] = -(b_vector[i])
+
+    c_additional = [0] * len(a_matrix[0]) + [-1] * len(a_matrix)
+    print("c_additional: ", c_additional)
+
+    eye = np.eye(len(c_additional) - len(a_matrix[0]), len(a_matrix))
+    a_additional_matrix = np.c_[a_matrix, eye]
+    print("a_additional: ", a_additional_matrix)
+
+    x_initial_plan = [0] * len(a_matrix[0]) + b_vector
+    print("x_initial_basis_plan: ", x_initial_plan)
+    b_initial_plan = [len(a_matrix[0]) + i + 1 for i in range(len(a_matrix))]
+    print("b_initial_basis_plan: ", b_initial_plan)
+
+    b_indexes_base_result = b_initial_plan
+    a_base_matrix, inverse_matrix = get_inverse_matrix(a_additional_matrix, b_initial_plan)
+
+    x_basis_plan, b_basis_result = \
+        main_phase_of_simplex_method(c_additional, a_additional_matrix,
+                                     a_base_matrix, inverse_matrix,
+                                     x_initial_plan, b_initial_plan,
+                                     b_indexes_base_result)
+
+    print("Result of additional task: ", x_basis_plan, b_basis_result)
+
+    for i in range(len(a_matrix[0]), len(a_additional_matrix[0])):
+        if x_basis_plan[i] != 0:
+            raise Exception("Problem is infeasible")
+
+    while max(b_basis_result) > len(a_matrix[0]) + 1:
+        j_k = max(b_basis_result)
+        k = b_basis_result.index(j_k) + 1
+        i = j_k - len(a_matrix[0])
+
+        j_vector = [i for i in range(1, len(a_matrix[0]) + 1) if i <= len(a_matrix[0])+1 and i not in b_basis_result]
+        print(j_k, k, i, j_vector)
+
+        a_base_matrix, inverse_matrix = get_inverse_matrix(a_additional_matrix, b_basis_result)
+
+        for i in j_vector:
+            l_k = multiply_matrix_on_vector(inverse_matrix,  a_additional_matrix[:, i-1])
+
+            if l_k[k-1] != 0:
+                b_basis_result[k-1] = i-1
+            else:
+                a_additional_matrix = a_additional_matrix[:i-1]
+                a_matrix = a_matrix[:i-1]
+
+                b_basis_result.remove(j_k)
+                b_vector.remove(b_vector[i-1])
+
+                break
+
+    return x_basis_plan[:len(a_matrix[0])], b_basis_result, a_matrix, b_vector
+
+
+def lab3_test():
+    matrix_a = [[1, 1, 1],
+                [2, 2, 2]]
+    vector_c = [1, 0, 0]
+    vector_b = [0, 0]
+
+    print(simplex_method(vector_c, matrix_a, vector_b))
+
+    matrix_a = [[0, -1, 1, 1, 0],
+                [-5, 1, 1, 0, 0],
+                [-8, 1, 2, 0, -1]]
+    vector_c = [-3, 1, 4, 0, 0]
+    vector_b = [1, 2, 3]
+
+    print(simplex_method(vector_c, matrix_a, vector_b))
 
 
 def lab2_test():
@@ -239,4 +314,4 @@ def lab1_test():
 
 
 if __name__ == '__main__':
-    lab2_test()
+    lab3_test()
