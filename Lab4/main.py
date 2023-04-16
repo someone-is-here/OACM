@@ -16,7 +16,7 @@ def create_optimal_plan(vector_c, basis_vector, pseudo_plan_vector):
 
 
 def check_optimal(k):
-    for i in range(len(k)-1,-1,-1):
+    for i in range(len(k)-1, -1, -1):
         if k[i] < 0:
             return i + 1
 
