@@ -37,7 +37,7 @@ def create_matrix_h(matrix_d, matrix_a, vector_j_basis_expanded):
                 matrix_h[j_index - 1][i_index - 1 + len(vector_j_basis_expanded)] = matrix_a[i - 1][j - 1]
             j_index += 1
         i_index += 1
-    print(matrix_h)
+    # print(matrix_h)
     return matrix_h
 
 
@@ -71,21 +71,21 @@ def get_j_additional(j_0, vector_j_base_expanded, matrix_d, l_basis_expanded, ve
     if sigma == 0:
         tetta_arr[j_0 - 1] = np.Infinity
     else:
-        print(vector_delta_x[j_0 - 1], sigma)
+        # print(vector_delta_x[j_0 - 1], sigma)
         tetta_arr[j_0 - 1] = np.abs(vector_delta_x[j_0 - 1]) / sigma
 
-    print(j_0, tetta_arr)
+    # print(j_0, tetta_arr)
 
     for j in vector_j_base_expanded:
         if l_basis_expanded[j - 1] >= 0 and j_0 != j:
             tetta_arr[j - 1] = np.Infinity
         elif j_0 != j:
             tetta_arr[j - 1] = -vector_x[j - 1] / l_basis_expanded[j - 1]
-    print(tetta_arr)
+    # print(tetta_arr)
     tetta_0 = min(tetta_arr)
 
     if tetta_0 == np.Infinity:
-        print("Target task function is not limited by the set of possible options")
+        # print("Target task function is not limited by the set of possible options")
         exit(-1)
     j_additional = tetta_arr.index(tetta_0) + 1
 
@@ -104,36 +104,36 @@ def solve(vector_c, vector_x,
     vector_delta_x = np.array(vector_u_x).dot(np.array(matrix_a)) + vector_c_x
 
     is_optimal, j_0 = check_is_optimal(vector_delta_x)
-    print("Vector delta: ", vector_delta_x)
+    # print("Vector delta: ", vector_delta_x)
     if is_optimal:
         print("Plan is optimal", vector_x)
         return vector_x
 
-    print("Index: ", j_0)
-    print(vector_j_base_expanded)
+    # print("Index: ", j_0)
+    # print(vector_j_base_expanded)
     l_basis_expanded = create_l_vector(j_0, vector_j_base_expanded, vector_x, matrix_d, matrix_a)
-    print(l_basis_expanded)
+    # print(l_basis_expanded)
 
     j_additional, tetta_0 = get_j_additional(j_0, vector_j_base_expanded,
                                              matrix_d, l_basis_expanded,
                                              vector_delta_x, vector_x)
-    print(j_additional)
+    # print(j_additional)
 
     vector_x = vector_x + np.array(l_basis_expanded) * tetta_0
-    print(vector_x)
+    # print(vector_x)
 
     if j_0 == j_additional:
-        print("FIRST")
+        # print("FIRST")
         vector_j_base_expanded.append(j_additional)
     elif j_additional in vector_j_base_expanded and j_additional not in vector_j_base:
-        print("SECOND")
+        # print("SECOND")
         vector_j_base_expanded.remove(j_additional)
     else:
         s_index = vector_j_base.index(j_additional)
         is_third = False
-        print("THIRD")
-        print(vector_j_base)
-        print(vector_j_base_expanded)
+        # print("THIRD")
+        # print(vector_j_base)
+        # print(vector_j_base_expanded)
         for i in vector_j_base_expanded:
             if i not in vector_j_base and np.array(matrix_a_basis).dot(np.array(matrix_a[:, i-1]))[s_index] != 0:
                 vector_j_base[j_additional] = i
