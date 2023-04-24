@@ -13,12 +13,12 @@ def fill_matrix_x(vector_a, vector_b, matrix_x):
     vector_basis_index = []
 
     while i != len(vector_a) and j != len(vector_b):
-        if max(vector_a[i], vector_b[j]) == vector_a[i]:
+        if max(vector_a[i], vector_b[j]) == vector_a[i] and i > j:
             vector_a[i] -= vector_b[j]
             matrix_x[i][j] = vector_b[j]
             vector_basis_index.append((i, j))
             j += 1
-        elif max(vector_a[i], vector_b[j]) == vector_b[j]:
+        elif max(vector_a[i], vector_b[j]) == vector_b[j] and j <= i:
             vector_b[j] -= vector_a[i]
             matrix_x[i][j] = vector_a[i]
             vector_basis_index.append((i, j))
@@ -47,8 +47,6 @@ def solve(vector_a, vector_b, matrix_c):
     matrix_x = np.zeros((m, n))
     vector_basis_index = fill_matrix_x(vector_a, vector_b, matrix_x)
 
-    # print(matrix_x)
-    # print(vector_basis_index)
     while True:
         matrix_u_v = []
         vector_u_v_res = []
@@ -65,6 +63,7 @@ def solve(vector_a, vector_b, matrix_c):
             _ = matrix_u_v[i].pop(index)
 
         vector_res = np.linalg.solve(np.array(matrix_u_v), np.array(vector_u_v_res))
+
         vector_res = list(vector_res)
         vector_res.insert(index, 0.0)
         # print(vector_res)
@@ -163,7 +162,4 @@ def solve(vector_a, vector_b, matrix_c):
 
             counter += 1
         index_old = sorted(index_old)
-        # print(matrix_x)
-        # print("old indexes: ", index_old)
         vector_basis_index.remove(index_old[0])
-        # print(vector_basis_index)
